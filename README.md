@@ -15,11 +15,14 @@ A tmux plugin that opens a lazygit-style popup TUI to browse hotkeys and execute
 ### TPM
 
 ```tmux
-set -g @plugin 'jacky24/tmux_keybindings'
+set -g @plugin 'HTLife/tmux_keybindings'
+set -g @keybindings_popup_trigger '?'
 run '~/.tmux/plugins/tpm/tpm'
 ```
 
 Then inside tmux press `Prefix + I` to install plugins.
+
+Tip: keep plugin options above the TPM `run` line.
 
 ### Manual
 

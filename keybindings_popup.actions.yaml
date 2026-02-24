@@ -1,0 +1,115 @@
+actions:
+  - key: "Prefix+g"
+    description: "Open lazygit"
+    group: "Git"
+    type: shell
+    command: "lazygit"
+
+  - key: "Prefix+t"
+    description: "New scratch window"
+    group: "Windows"
+    type: tmux
+    command: "new-window -n scratch"
+
+  - key: "Prefix+v"
+    description: "Split and run htop"
+    group: "Panes"
+    type: tmux
+    command: "split-window -h 'htop'"
+
+  - key: "copy-mode v"
+    description: "Begin selection"
+    group: "Copy Mode"
+    type: tmux
+    command: "bind-key -T copy-mode-vi v send-keys -X begin-selection"
+
+  - key: "copy-mode C-v"
+    description: "Rectangle toggle"
+    group: "Copy Mode"
+    type: tmux
+    command: "bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle"
+
+  - key: "copy-mode y"
+    description: "Copy selection and cancel"
+    group: "Copy Mode"
+    type: tmux
+    command: "bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel"
+
+  - key: 'Prefix+"'
+    description: "Split window vertical"
+    group: "Panes"
+    type: tmux
+    command: 'bind "\"" split-window -v -c "#{pane_current_path}"'
+
+  - key: "Prefix+%"
+    description: "Split window horizontal"
+    group: "Panes"
+    type: tmux
+    command: 'bind % split-window -h -c "#{pane_current_path}"'
+
+  - key: "F1"
+    description: "Select window 1"
+    group: "Function Keys"
+    type: tmux
+    command: "bind-key -n F1 select-window -t 1"
+
+  - key: "F2"
+    description: "Select window 2"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F2 select-window -t 2"
+
+  - key: "F3"
+    description: "Select window 3"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F3 select-window -t 3"
+
+  - key: "F4"
+    description: "Select window 4"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F4 select-window -t 4"
+
+  - key: "F5"
+    description: "Select window 5"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F5 select-window -t 5"
+
+  - key: "F6"
+    description: "Select window 6"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F6 select-window -t 6"
+
+  - key: "F7"
+    description: "Select window 7"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F7 select-window -t 7"
+
+  - key: "F8"
+    description: "Select window 8"
+    group: "Function Keys"
+    omit: true
+    type: tmux
+    command: "bind-key -n F8 select-window -t 8"
+
+  - key: "F12"
+    description: "New window current path"
+    group: "Function Keys"
+    type: tmux
+    command: 'bind-key -n F12 new-window -c "#{pane_current_path}"'
+
+  - key: "M-w"
+    description: "Kill all other windows"
+    group: "Windows"
+    type: tmux
+    command: "bind-key -n M-w kill-window -a"
