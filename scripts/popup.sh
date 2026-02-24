@@ -57,7 +57,10 @@ yaml_actions_to_legacy_rows() {
           return
         }
         if (desc == "") { desc = key }
-        if (group != "") { desc = "[" group "] " desc }
+        if (group != "" && group != last_group) {
+          print "__GROUP__|" group "|section|"
+          last_group = group
+        }
         print key "|" desc "|" type "|" cmd
       }
       key = ""; desc = ""; type = ""; cmd = ""; group = ""; omit = ""
@@ -155,12 +158,13 @@ run_action() {
 build_rows() {
   load_actions | awk -F'|' 'NF >= 4 {
     key=$1; desc=$2; type=$3;
-    if (tolower(type) == "section" || tolower(type) == "group") {
-      next
-    }
     payload="";
     for (i=4; i<=NF; i++) {
       payload = payload ((i==4)?"":"|") $i;
+    }
+    if (tolower(type) == "section" || tolower(type) == "group") {
+      printf "\033[32m====== %s ======\033[0m\tsection\t\n", desc;
+      next
     }
     if (payload == "") {
       next
@@ -185,11 +189,13 @@ select_row() {
     while true; do
       if [ "$mode" = "nav" ]; then
         out="$(
-          printf '%s\n' "$rows" | \
-            FZF_DEFAULT_OPTS= fzf \
+          printf '%s\n' "$rows" | tac | \
+            FZF_DEFAULT_OPTS= FZF_DEFAULT_OPTS_FILE= fzf \
               --ansi \
               --no-multi \
               --disabled \
+              --no-sort \
+              --layout=default \
               --delimiter='\t' \
               --with-nth=1 \
               --expect='enter,esc,/' \
@@ -199,10 +205,12 @@ select_row() {
         )"
       else
         out="$(
-          printf '%s\n' "$rows" | \
-            FZF_DEFAULT_OPTS= fzf \
+          printf '%s\n' "$rows" | tac | \
+            FZF_DEFAULT_OPTS= FZF_DEFAULT_OPTS_FILE= fzf \
               --ansi \
               --no-multi \
+              --no-sort \
+              --layout=default \
               --delimiter='\t' \
               --with-nth=1 \
               --expect='enter,esc,/' \
@@ -240,18 +248,25 @@ select_row() {
       fi
 
       if [ -n "$selected" ]; then
+        if [ "$(printf '%s\n' "$selected" | cut -f2)" = "section" ]; then
+          continue
+        fi
         printf '%s\n' "$selected"
         return 0
       fi
     done
   else
     # Basic fallback selector when fzf is unavailable.
+    local selectable_rows
+    selectable_rows="$(printf '%s\n' "$rows" | awk -F'\t' '$2 != "section"')"
+    [ -z "$selectable_rows" ] && return 0
+
     local i=1
     local line
     while IFS= read -r line; do
       printf '%2d) %s\n' "$i" "${line%%$'\t'*}"
       i=$((i + 1))
-    done <<< "$rows"
+    done <<< "$selectable_rows"
 
     printf '\nSelect number (blank to cancel): '
     read -r index
@@ -259,7 +274,7 @@ select_row() {
       return 0
     fi
 
-    sed -n "${index}p" <<< "$rows"
+    sed -n "${index}p" <<< "$selectable_rows"
   fi
 }
 
